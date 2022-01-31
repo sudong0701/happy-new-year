@@ -2,20 +2,116 @@
 <html lang="zh">
 
 <head>
+    <script>
+        //移动端集成响应式布局 rem
+        function flexible(window, document) {
+            var docEl = document.documentElement
+            var dpr = window.devicePixelRatio || 1
+
+            // adjust body font size
+            function setBodyFontSize() {
+                if (document.body) {
+                    document.body.style.fontSize = (12 * dpr) + 'px'
+                }
+                else {
+                    document.addEventListener('DOMContentLoaded', setBodyFontSize)
+                }
+            }
+            setBodyFontSize();
+
+            // set 1rem = viewWidth / 10
+            function setRemUnit() {
+                var rem = docEl.clientWidth / 7.5
+                docEl.style.fontSize = rem + 'px'
+            }
+
+            setRemUnit()
+
+            // reset rem unit on page resize
+            window.addEventListener('resize', setRemUnit)
+            window.addEventListener('pageshow', function (e) {
+                if (e.persisted) {
+                    setRemUnit()
+                }
+            })
+
+            // detect 0.5px supports
+            if (dpr >= 2) {
+                var fakeBody = document.createElement('body')
+                var testElement = document.createElement('div')
+                testElement.style.border = '.5px solid transparent'
+                fakeBody.appendChild(testElement)
+                docEl.appendChild(fakeBody)
+                if (testElement.offsetHeight === 1) {
+                    docEl.classList.add('hairlines')
+                }
+                docEl.removeChild(fakeBody)
+            }
+        }
+
+        flexible(window, document)
+    </script>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <title>最美的烟火</title>
+    <link rel="stylesheet" href="./index.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
-        body{
+        body {
             padding: 0;
             margin: 0;
+        }
+
+        .audio>img {
+            position: absolute;
+            right: 16px;
+            top: 16px;
+            height: 32px;
+            width: 32px;
+        }
+
+        .audio>img:first-child {
+            display: none;
         }
     </style>
 </head>
 
 <body>
-    <script src="https://cdn.bootcdn.net/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <div class="bounce">
+        <span class="letter">新年快乐 虎年大吉</span>
+        <!-- <span class="letter">新</span>
+        <span class="letter">年</span>
+        <span class="letter">快</span>
+        <span class="letter">乐</span>
+        <span class="letter">虎</span>
+        <span class="letter">虎</span>
+        <span class="letter">生</span>
+        <span class="letter">威</span> -->
+    </div>
+    <div class="audio">
+        <img id="open" src="./assets/open.png" alt="" onclick="closeAudio()">
+        <img id="close" src="./assets/close.png" alt="" onclick="openAudio()">
+    </div>
+    <audio id="audio" src="https://medlander.oss-cn-hangzhou.aliyuncs.com/mineslim_agency/2022/01/31/1643626590263.wav" loop></audio>
+    <!-- <script src="https://cdn.bootcdn.net/ajax/libs/p5.js/1.4.0/p5.js"></script> -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.min.js" integrity="sha512-N4kV7GkNv7QR7RX9YF/olywyIgIwNvfEe2nZtfyj73HdjCUkAfOBDbcuJ/cTaN04JKRnw1YG1wnUyNKMsNgg3g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
+    <script>
+        var openBtn = document.getElementById('open')
+        var closeBtn = document.getElementById('close')
+        var audio = document.getElementById('audio')
+        function closeAudio() {
+            openBtn.style.display = 'none'
+            closeBtn.style.display = 'inline-block'
+            audio.pause()
+        }
+        function openAudio() {
+            closeBtn.style.display = 'none'
+            openBtn.style.display = 'inline-block'
+            audio.play()
+        }
+    </script>
+    <script src="./js/p5.min.js"></script>
     <script src="./js/particle.js"></script>
     <script src="./js/firework.js"></script>
     <script src="./js/sketch.js"></script>
